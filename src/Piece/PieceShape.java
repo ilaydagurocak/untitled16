@@ -6,7 +6,17 @@ import java.util.Arrays;
 import Game.FieldSquare;
 
 public abstract class PieceShape {
+    public int length;
     private int currentShapeIndex;
+
+        // existing fields...
+
+        private int[][] shape;  // assuming this is a 2D array representing the shape
+
+
+
+        // existing methods...
+
 
     public PieceShape() {
         this.setCurrentShapeIndex(0);

@@ -12,7 +12,6 @@ public class InputHandler implements KeyListener {
         display.getCanvas().addKeyListener(this);
         this.game = game;
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
@@ -29,8 +28,10 @@ public class InputHandler implements KeyListener {
             System.exit(0);
         } else if (keyCode == KeyEvent.VK_P) {
             game.pause();
-        } else if (keyCode == KeyEvent.VK_S) {
+        } else if (keyCode == KeyEvent.VK_R) {
             game.resume();
+        } else if (keyCode == KeyEvent.VK_S) {
+            game.storePiece();
         }
     }
 

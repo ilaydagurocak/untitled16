@@ -20,6 +20,9 @@ public class Field {
         this.score = 0;
         this.initializeField(fieldHeight, fieldWidth);
     }
+
+
+
     public void destroyFullRows() {
         for (int row = 0; row < this.field.length; row++) {
             boolean isFullRow = true;

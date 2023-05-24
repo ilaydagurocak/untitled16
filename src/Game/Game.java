@@ -20,10 +20,15 @@ public class Game implements Runnable{
         thread1.start();
         thread2.start();
     }
-    private int score = 0;
-    private void updateScore() {
-        int linesDeleted = 1;
-        score += 100 * (linesDeleted + 1);
+
+    private Piece storedPiece;
+
+    private int pieceHeight;
+    // existing methods...
+    int renderY = Game.DISPLAY_HEIGHT - pieceHeight - 50;
+
+    private Piece getStoredPiece() {
+        return storedPiece;
     }
 
     private static final int NEXT_PIECE_X = 11;
@@ -63,6 +68,28 @@ public class Game implements Runnable{
         this.setCurrentPiece(PieceGenerator.generatePiece());
         this.setNextPiece(PieceGenerator.generatePiece(Game.NEXT_PIECE_X, Game.NEXT_PIECE_Y));
     }
+    private void setStoredPiece(Piece storedPiece) {
+        this.storedPiece = storedPiece;
+    }
+
+    public void storePiece() {
+        if (this.getStoredPiece() == null) {
+            this.setStoredPiece(this.getCurrentPiece());
+            this.setCurrentPiece(PieceGenerator.generatePiece(Game.STARTING_PIECE_X, Game.STARTING_PIECE_Y));
+        } else {
+            swapPieces();
+        }
+    }
+
+    private void swapPieces() {
+        Piece temp = this.getCurrentPiece();
+        this.setCurrentPiece(this.getStoredPiece());
+        this.setStoredPiece(temp);
+        this.getCurrentPiece().movePieceToStartingPoint();
+    }
+
+
+    // existing methods...
 
     private String getTitle() {
         return title;
@@ -138,10 +165,12 @@ public class Game implements Runnable{
         }
     }
 
+
+
+
+    // The method that will draw everything on the canvas
     // The method that will draw everything on the canvas
     private void render() {
-        // Setting the bufferStrategy to be the one used in our canvas
-        // Gets the number of buffers that the canvas should use.
         this.bs = display.getCanvas().getBufferStrategy();
         // If our bufferStrategy doesn't know how many buffers to use
         // we create some manually
@@ -159,11 +188,30 @@ public class Game implements Runnable{
         this.graphics.clearRect(0, 0, this.display.getWidth(), this.display.getHeight());
         // Beginning of drawing things on the screen
 
+        // Draw a line to separate the playing field and the stored/next pieces
         this.graphics.drawLine(300, 0, 300, 600);
 
         this.field.render(this.graphics);
         this.currentPiece.render(this.graphics);
         this.nextPiece.render(this.graphics);
+
+        if (this.getStoredPiece() != null) {
+            Piece storedPiece = this.getStoredPiece();
+            int pieceWidth = storedPiece.getWidth() * Piece.RECT_WIDTH;
+            int pieceHeight = storedPiece.getHeight() * Piece.RECT_HEIGHT;
+
+            // Calculate the position to render the piece.
+            // Here, we're placing the piece at the bottom-right corner of the display.
+            int renderX = Game.DISPLAY_WIDTH - pieceWidth - 50+50; // 50 is padding
+            int renderY = Game.DISPLAY_HEIGHT - pieceHeight - 50; // 50 is padding
+
+            // Draw a red rectangle in the area where the piece should be displayed
+            this.graphics.setColor(Color.WHITE);
+            this.graphics.fillRect(renderX, renderY, pieceWidth, pieceHeight);
+
+            // Render the stored piece at the calculated position
+            storedPiece.render(this.graphics, renderX, renderY);
+        }
 
         // Checks if a State exists and render()
         // if (StateManager.getState() != null){
@@ -264,3 +312,6 @@ public class Game implements Runnable{
         return false;
     }
 }
+
+
+
